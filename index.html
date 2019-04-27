@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous">
+
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="row mt-4 mb-4" style="background-color: burlywood; padding-top: 0;">
+            <form action="">
+                <h2>Add Record</h2>
+                <table>
+                    <tr>
+                        <td>
+                            <label for="">Name :</label>
+                        </td>
+                        <td>
+                            <input type="text" id="std-name">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="">ID :</label>
+                        </td>
+                        <td>
+                            <input type="text" id="std-id">
+                        </td>
+                    </tr>
+
+                </table>
+                <button type="button" data-toggle="modal" data-target="#exampleModalCenter" class="btn-success btn btn-" onclick="addRow();">Add</button>
+            </form>
+        </div>
+        <div class="row">
+            <table class="auto-index table table-striped" id="myTable" width="400px" style="text-align: center; padding: 2px; margin: 0px;">
+                <thead id="tHead"></thead>
+                <tbody id="tBody">
+                </tbody>
+
+            </table>
+        </div>
+        <div class="row mt-4 mb-4" id="hiddenDiv" style="background-color: burlywood; visibility: hidden; padding-top: 0;">
+            <form action="">
+                <h2>Edit Record</h2>
+                <table>
+                    <tr style="display: none;">
+                        <td>
+                            <label for="">Index No :</label>
+                            <td>
+                                <input type="text" id="indexNo1" disabled>
+                            </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="">ID :</label>
+                        </td>
+                        <td>
+                            <input type="text" id="std-id1">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="">Name :</label>
+                        </td>
+                        <td>
+                            <input type="text" id="std-name1">
+                        </td>
+                    </tr>
+                </table>
+                <button type="button" data-toggle="modal" data-target="#exampleModalCenter" class="btn-success btn btn-" onclick="updateRow();">Update</button>
+            </form>
+        </div>
+    </div>
+    <div id="modal-hidden" style="visibility: hidden;">
+
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">Update Record</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h5 id="modal-msg">Your record has been update.</h5>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        var stdName = ["Jahanzaib", "Tabish", "Umair", "Zeeshan", "Tuaha"];
+        var stdID = [12, 32, 33, 32, 11]
+        var tBodyId = document.getElementById('tBody');
+        var tHeadId = document.getElementById('tHead');
+
+        function createTable() {
+
+            tHeadId.innerHTML = " <tr class='thead-dark'><th>INDEX</th><th>NAME</th><th>ID</th><th colspan='2'></th> ";
+
+            for (let i = 0; i < stdName.length; i++) {
+
+                var createTr = document.createElement("tr");
+                createTr.setAttribute('id', i);
+
+                var createTd1 = document.createElement("td");
+                var td1 = document.createTextNode(i);
+                createTd1.appendChild(td1);
+                createTr.appendChild(createTd1);
+
+
+                var createTd2 = document.createElement("td");
+                var td2 = document.createTextNode(stdName[i]);
+                createTd2.appendChild(td2);
+                createTr.appendChild(createTd2);
+
+                var createTd3 = document.createElement("td");
+                var td3 = document.createTextNode(stdID[i]);
+                createTd3.appendChild(td3);
+                createTr.appendChild(createTd3);
+
+                var createTd4 = document.createElement("td");
+                var td4 = document.createElement("button");
+
+                td4.setAttribute("class", "col btn btn-sm btn-danger");
+                // td4.setAttribute(" data-toggle", "modal");
+                td4.setAttribute("data-target", "#exampleModalCenter");
+                td4.setAttribute("data-toggle", "modal");
+
+                td4.innerHTML = "Delete";
+                td4.setAttribute
+                td4.addEventListener("click", function () {
+                    deleteRow(i)
+                })
+                createTd4.appendChild(td4);
+                createTr.appendChild(createTd4);
+
+                var createTd5 = document.createElement("td");
+                var td5 = document.createElement("button");
+                td5.setAttribute("class", "col btn btn-sm btn-info");
+                td5.innerHTML = "Edit";
+                td5.addEventListener("click", function () {
+                    editRow(i)
+                })
+                createTd5.appendChild(td5);
+                createTr.appendChild(createTd5);
+
+
+
+                tBodyId.appendChild(createTr);
+
+            }
+        }
+
+        createTable();
+
+        function deleteRow(rowNum) {
+
+            stdID.splice(rowNum, 1);
+            stdName.splice(rowNum, 1);
+
+            tBodyId.innerHTML = null;
+            var modalMsg = document.getElementById('modal-msg');
+            modalMsg.innerText = 'Your Record has been deleted..';
+            modalVisible();
+            createTable();
+        }
+
+        function addRow() {
+            // modalVisible();
+            var table = document.getElementById("myTable");
+
+            var sName = document.getElementById("std-name").value;
+            var sId = document.getElementById("std-id").value;
+
+
+            if (sName != '' && sId != '') {
+                tBodyId.innerHTML = null;
+                stdName.push(sName);
+                stdID.push(sId);
+
+                createTable();
+
+                document.getElementById("std-id").value = "";
+                document.getElementById("std-name").value = "";
+
+                var modalMsg = document.getElementById('modal-msg');
+                modalMsg.innerText = 'Your Record has been add..';
+                modalVisible();
+            }
+            else {
+                var modalMsg = document.getElementById('modal-msg');
+                modalMsg.innerText = 'Please insert your data..';
+                modalVisible();
+
+            }
+
+        }
+
+        function editRow(iddd) {
+            var hideDiv = document.getElementById("hiddenDiv");
+            hideDiv.style.visibility = "visible";
+
+            var trr = document.getElementById(iddd);
+
+            var editIndex = trr.firstChild;
+
+            var editName = editIndex.nextSibling;
+
+            var editId = editName.nextSibling;
+
+            document.getElementById("indexNo1").value = editIndex.innerHTML;
+            document.getElementById("std-name1").value = editName.innerHTML;
+            document.getElementById("std-id1").value = editId.innerHTML;
+
+        }
+
+        function updateRow() {
+            var hideDiv = document.getElementById("hiddenDiv");
+            hideDiv.style.visibility = "hidden";
+
+            var uId = document.getElementById('std-id1').value;
+            var uName = document.getElementById('std-name1').value;
+            var indx = document.getElementById('indexNo1').value;
+
+            var a = stdName.slice(indx, Number(indx) + 1);
+            var b = stdID.slice(indx, Number(indx) + 1);
+            stdName[indx] = uName;
+            stdID[indx] = uId;
+            tBodyId.innerHTML = null;
+            createTable();
+            modalVisible();
+
+        }
+        function modalVisible() {
+
+            var getModalId = document.getElementById('modal-hidden');
+            getModalId.style.visibility = "visible";
+        }
+    </script>
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>
